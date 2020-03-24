@@ -1,13 +1,18 @@
-export const typeDefs = ["type Query {\n  sayBye: String!\n  sayHello: String!\n}\n\ntype Greeting {\n  text: String!\n  error: Boolean!\n}\n"];
+export const typeDefs = ["type Query {\n  sayBye: String!\n  sayHello(name: String!): SayHelloResponse!\n}\n\ntype SayHelloResponse {\n  text: String!\n  error: Boolean!\n}\n"];
 /* tslint:disable */
 
-// 타입스크립트로 변환된 쿼리
 export interface Query {
   sayBye: string;
-  sayHello: string;
+  sayHello: SayHelloResponse;
 }
 
-export interface Greeting {
+// 인자 수정 시 생성
+export interface SayHelloQueryArgs {
+  name: string;
+}
+
+// 리턴 값 수정 시 생성
+export interface SayHelloResponse {
   text: string;
   error: boolean;
 }

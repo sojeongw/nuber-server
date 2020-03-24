@@ -1,10 +1,9 @@
-# 모든 쿼리를 머지한 파일
 type Query {
   sayBye: String!
-  sayHello: String!
+  sayHello(name: String!): SayHelloResponse!
 }
 
-type Greeting {
+type SayHelloResponse {
   text: String!
   error: Boolean!
 }
