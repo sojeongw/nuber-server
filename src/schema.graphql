@@ -1,0 +1,10 @@
+# 모든 쿼리를 머지한 파일
+type Query {
+  sayBye: String!
+  sayHello: String!
+}
+
+type Greeting {
+  text: String!
+  error: Boolean!
+}
