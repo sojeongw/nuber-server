@@ -35,6 +35,29 @@ class User extends BaseEntity {
     @Column({ type: "text" })
     profilePhoto: string;
 
+    @Column({type: "boolean", default: false})
+    isDriving: boolean;
+
+    @Column({type: "boolean", default: false})
+    isRiding: boolean;
+
+    @Column({type: "boolean", default: false})
+    isTaken: boolean;
+
+    @Column({ type: "double precision", default: 0 })
+    lastLng: number;
+
+    @Column({ type: "double precision", default: 0 })
+    lastLat: number;
+
+    @Column({ type: "double precision", default: 0 })
+    lastOrientation: number;
+
+    // fullname은 칼럼이 아니라 여기 있는 칼럼을 활용하는 메서드다.
+    get fullName(): string {
+        return `${this.firstName} ${this.lastName}`;
+    }
+
     @CreateDateColumn() createdAt: string;
     @UpdateDateColumn() updatedAt: string;
 }
