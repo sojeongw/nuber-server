@@ -70,6 +70,12 @@ class User extends BaseEntity {
         return `${this.firstName} ${this.lastName}`;
     }
 
+    // 패스워드가 일치하는지 Promise가 Boolean으로 리턴한다.
+    public comparePassword(password: string): Promise<boolean> {
+        // 사용자가 입력한 패스워드(password)와 지금 있는 패스워드(this)를 비교한다.
+        return bcrypt.compare(password, this.password);
+    }
+
     @BeforeInsert()
     @BeforeUpdate()
     async savePassword(): Promise<void>{
