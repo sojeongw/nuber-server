@@ -1,14 +1,16 @@
+import bcrypt from "bcrypt";
 import {
     BaseEntity,
     BeforeInsert, BeforeUpdate,
     Column,
     CreateDateColumn,
-    Entity,
+    Entity, ManyToOne, OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
 import {IsEmail} from "class-validator";
-import bcrypt from "bcrypt";
+import Chat from "./Chat";
+import Message from "./Message";
 
 // 암호화 할 횟수
 const BCRYPT_ROUNDS = 10;
@@ -64,6 +66,12 @@ class User extends BaseEntity {
 
     @Column({ type: "double precision", default: 0 })
     lastOrientation: number;
+
+    @ManyToOne(type => Chat, chat => chat.participants)
+    chat: Chat;
+
+    @OneToMany(type => Message, message => message.user)
+    messages: Message;
 
     // fullname은 칼럼이 아니라 여기 있는 칼럼을 활용하는 메서드다.
     get fullName(): string {
