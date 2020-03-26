@@ -12,4 +12,6 @@ type Ride {
     duration: String!
     createdAt: String!
     updatedAt: String
+    driver: User!
+    passenger: User!
 }

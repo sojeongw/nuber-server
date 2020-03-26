@@ -11,6 +11,8 @@ import {
 import {IsEmail} from "class-validator";
 import Chat from "./Chat";
 import Message from "./Message";
+import Verification from "./Verification";
+import Ride from "./Ride";
 
 // 암호화 할 횟수
 const BCRYPT_ROUNDS = 10;
@@ -100,6 +102,15 @@ class User extends BaseEntity {
     private hashPassword(password: string): Promise<string> {
         return bcrypt.hash(password, BCRYPT_ROUNDS);
     }
+
+    @OneToMany(type => Verification, verification => verification.user)
+    verification: Verification[];
+
+    @OneToMany(type => Ride, ride => ride.passenger)
+    ridesAsPassenger: Ride[];
+
+    @OneToMany(type => Ride, ride => ride.driver)
+    ridesAsDriver: Ride[];
 
     @CreateDateColumn() createdAt: string;
     @UpdateDateColumn() updatedAt: string;
