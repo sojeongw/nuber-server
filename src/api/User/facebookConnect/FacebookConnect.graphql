@@ -1,0 +1,10 @@
+type FacebookConnectResponse {
+    ok: Boolean!
+    error: String
+    token: String # 사용자가 인증되면 그 사람에게 토큰을 부여한다.
+}
+
+# 리액트가 firstName: String!, lastName: String!, email: String, fbId: String!를 보내주면 FacebookConnectResponse로 응답을 보낸다.
+type Mutation {
+    FacebookConnect(firstName: String!, lastName: String!, email: String, fbId: String!): FacebookConnectResponse!
+}

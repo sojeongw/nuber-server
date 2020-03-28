@@ -1,4 +1,4 @@
-export const typeDefs = ["type Place {\n  id: Int!\n  name: String!\n  lat: Float!\n  lng: Float!\n  address: String!\n  isFav: Boolean!\n  createdAt: String!\n  updatedAt: String\n}\n\ntype Ride {\n  id: Int!\n  status: String!\n  pickUpAddress: String!\n  pickUpLat: Float!\n  pickUpLng: Float!\n  dropOffAddress: String!\n  dropOffLat: Float!\n  dropOffLng: Float!\n  price: Float!\n  distance: String!\n  duration: String!\n  createdAt: String!\n  updatedAt: String\n}\n\ntype User {\n  id: Int!\n  email: String\n  verifiedEmail: Boolean!\n  firstName: String!\n  lastName: String!\n  age: Int\n  password: String\n  phoneNumber: String\n  verifiedPhoneNumber: Boolean!\n  profilePhoto: String\n  createdAt: String!\n  updatedAt: String\n  fullName: String\n  isDriving: Boolean!\n  isRiding: Boolean!\n  isTaken: Boolean!\n  lastLng: Float\n  lastLat: Float\n  lastOrientation: Float\n}\n\ntype Query {\n  user: User\n}\n\ntype Verification {\n  id: Int!\n  target: String!\n  payload: String!\n  kdy: String!\n  used: Boolean!\n  createdAt: String!\n  updateAt: String!\n}\n"];
+export const typeDefs = ["type Chat {\n  id: Int!\n  messages: [Message]!\n  participants: [User]!\n  createdAt: String!\n  updatedAt: String\n}\n\ntype Message {\n  id: Int!\n  text: String!\n  chat: Chat!\n  user: User!\n  createdAt: String!\n  updatedAt: String\n}\n\ntype Place {\n  id: Int!\n  name: String!\n  lat: Float!\n  lng: Float!\n  address: String!\n  isFav: Boolean!\n  createdAt: String!\n  updatedAt: String\n}\n\ntype Ride {\n  id: Int!\n  status: String!\n  pickUpAddress: String!\n  pickUpLat: Float!\n  pickUpLng: Float!\n  dropOffAddress: String!\n  dropOffLat: Float!\n  dropOffLng: Float!\n  price: Float!\n  distance: String!\n  duration: String!\n  createdAt: String!\n  updatedAt: String\n  driver: User!\n  passenger: User!\n}\n\ntype FacebookConnectResponse {\n  ok: Boolean!\n  error: String\n  token: String\n}\n\n# 리액트가 firstName: String!, lastName: String!, email: String, fbId: String!를 보내주면 FacebookConnectResponse로 응답을 보낸다.\ntype Mutation {\n  FacebookConnect(firstName: String!, lastName: String!, email: String, fbId: String!): FacebookConnectResponse!\n}\n\ntype User {\n  id: Int!\n  email: String\n  verifiedEmail: Boolean!\n  firstName: String!\n  lastName: String!\n  age: Int\n  password: String\n  phoneNumber: String\n  verifiedPhoneNumber: Boolean!\n  profilePhoto: String\n  createdAt: String!\n  updatedAt: String\n  fullName: String\n  isDriving: Boolean!\n  isRiding: Boolean!\n  isTaken: Boolean!\n  lastLng: Float\n  lastLat: Float\n  lastOrientation: Float\n  fbId: String\n  chat: Chat\n  messages: [Message]\n  verification: [Verification]\n  ridesAsPassenger: [Ride]\n  ridesAsDriver: [Ride]\n}\n\ntype Query {\n  user: User\n}\n\ntype Verification {\n  id: Int!\n  target: String!\n  payload: String!\n  kdy: String!\n  used: Boolean!\n  createdAt: String!\n  updateAt: String!\n  user: User!\n}\n"];
 /* tslint:disable */
 
 export interface Query {
@@ -25,17 +25,40 @@ export interface User {
   lastLng: number | null;
   lastLat: number | null;
   lastOrientation: number | null;
+  fbId: string | null;
+  chat: Chat | null;
+  messages: Array<Message> | null;
+  verification: Array<Verification> | null;
+  ridesAsPassenger: Array<Ride> | null;
+  ridesAsDriver: Array<Ride> | null;
 }
 
-export interface Place {
+export interface Chat {
   id: number;
-  name: string;
-  lat: number;
-  lng: number;
-  address: string;
-  isFav: boolean;
+  messages: Array<Message>;
+  participants: Array<User>;
   createdAt: string;
   updatedAt: string | null;
+}
+
+export interface Message {
+  id: number;
+  text: string;
+  chat: Chat;
+  user: User;
+  createdAt: string;
+  updatedAt: string | null;
+}
+
+export interface Verification {
+  id: number;
+  target: string;
+  payload: string;
+  kdy: string;
+  used: boolean;
+  createdAt: string;
+  updateAt: string;
+  user: User;
 }
 
 export interface Ride {
@@ -52,14 +75,34 @@ export interface Ride {
   duration: string;
   createdAt: string;
   updatedAt: string | null;
+  driver: User;
+  passenger: User;
 }
 
-export interface Verification {
+export interface Mutation {
+  FacebookConnect: FacebookConnectResponse;
+}
+
+export interface FacebookConnectMutationArgs {
+  firstName: string;
+  lastName: string;
+  email: string | null;
+  fbId: string;
+}
+
+export interface FacebookConnectResponse {
+  ok: boolean;
+  error: string | null;
+  token: string | null;
+}
+
+export interface Place {
   id: number;
-  target: string;
-  payload: string;
-  kdy: string;
-  used: boolean;
+  name: string;
+  lat: number;
+  lng: number;
+  address: string;
+  isFav: boolean;
   createdAt: string;
-  updateAt: string;
+  updatedAt: string | null;
 }
