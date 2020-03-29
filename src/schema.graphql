@@ -44,15 +44,22 @@ type Ride {
   passenger: User!
 }
 
-type FacebookConnectResponse {
+type EmailSignInResponse {
   ok: Boolean!
   error: String
   token: String
 }
 
-# 리액트가 firstName: String!, lastName: String!, email: String, fbId: String!를 보내주면 FacebookConnectResponse로 응답을 보낸다.
 type Mutation {
+  EmailSignIn(email: String!, password: String!): EmailSignInResponse!
   FacebookConnect(firstName: String!, lastName: String!, email: String, fbId: String!): FacebookConnectResponse!
+  StartPhoneVerification(phoneNumber: String!): StartPhoneVerificationResponse!
+}
+
+type FacebookConnectResponse {
+  ok: Boolean!
+  error: String
+  token: String
 }
 
 type User {
@@ -78,7 +85,6 @@ type User {
   fbId: String
   chat: Chat
   messages: [Message]
-  verification: [Verification]
   ridesAsPassenger: [Ride]
   ridesAsDriver: [Ride]
 }
@@ -87,13 +93,16 @@ type Query {
   user: User
 }
 
+type StartPhoneVerificationResponse {
+  ok: Boolean!
+  error: String
+}
+
 type Verification {
   id: Int!
   target: String!
   payload: String!
-  kdy: String!
-  used: Boolean!
+  key: String!
   createdAt: String!
   updateAt: String!
-  user: User!
 }

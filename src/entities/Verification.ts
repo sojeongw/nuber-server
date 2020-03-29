@@ -1,39 +1,43 @@
 import {
     BaseEntity,
+    BeforeInsert,
     Column,
     CreateDateColumn,
     Entity,
-    ManyToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
-import User from "./User";
+import { verificationTarget } from "../types/types";
+
+const PHONE = "PHONE";
+const EMAIL = "EMAIL";
 
 @Entity()
-class Place extends BaseEntity {
+class Verification extends BaseEntity {
     @PrimaryGeneratedColumn() id: number;
 
-    @Column({ type: "text" })
-    name: string;
-
-    @Column({ type: "double precision", default: 0 })
-    lat: number;
-
-    @Column({ type: "double precision", default: 0 })
-    lng: number;
+    @Column({ type: "text", enum: [PHONE, EMAIL] })
+    target: verificationTarget;
 
     @Column({ type: "text" })
-    address: string;
+    payload: string;
 
-    @Column({ type: "boolean", default: false })
-    isFav: boolean;
-
-    @ManyToOne(type => User, user => user.verification)
-    user: User;
+    @Column({ type: "text" })
+    key: string;
 
     @CreateDateColumn() createdAt: string;
+
     @UpdateDateColumn() updatedAt: string;
 
-
+    @BeforeInsert()
+    createKey(): void {
+        if (this.target === PHONE) {
+            this.key = Math.floor(Math.random() * 100000).toString();
+        } else if (this.target === EMAIL) {
+            this.key = Math.random()
+                .toString(36)
+                .substr(2);
+        }
+    }
 }
-export default Place;
+export default Verification;
