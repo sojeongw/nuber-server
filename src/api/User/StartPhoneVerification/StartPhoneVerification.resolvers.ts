@@ -4,6 +4,7 @@ import {
     StartPhoneVerificationResponse
 } from "../../../types/graph";
 import { Resolvers } from "../../../types/resolvers";
+import {sendSMS} from "../../../utils/sendSMS";
 
 const resolvers: Resolvers = {
     Mutation: {
@@ -24,7 +25,12 @@ const resolvers: Resolvers = {
                     target: "PHONE"
                 }).save();
 
-                // to do: send SMS
+                // 끝나길 기다렸다가 다음 행동인 return을 수행한다.
+                await sendSMS(newVerification.payload, newVerification.key);
+                return {
+                    ok: true,
+                    error: null
+                }
             } catch (error) {
                 return {
                     ok: false,

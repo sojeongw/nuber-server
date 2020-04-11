@@ -1,4 +1,4 @@
-import {Resolvers} from "../../../types/Resolvers";
+import {Resolvers} from "../../../types/resolvers";
 import { EmailSignInMutationArgs, EmailSignInResponse } from '../../../types/graph';
 import User from '../../../entities/User';
 
