@@ -109,6 +109,7 @@ export interface StartPhoneVerificationMutationArgs {
 export interface CompletePhoneVerificationResponse {
   ok: boolean;
   error: string | null;
+  token: string | null;
 }
 
 export interface EmailSignInResponse {

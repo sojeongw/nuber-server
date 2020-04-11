@@ -1,6 +1,7 @@
 import {Resolvers} from "../../../types/resolvers";
 import {FacebookConnectMutationArgs, FacebookConnectResponse} from "../../../types/graph";
 import User from "../../../entities/User";
+import createJWT from "../../../utils/createJWT";
 
 const resolvers: Resolvers = {
     Mutation: {
@@ -17,11 +18,14 @@ const resolvers: Resolvers = {
                 const existingUser = await User.findOne({fbId});
 
                 if (existingUser) {
+
+                    const token = createJWT(existingUser.id);
+
                     // FacebookConnectResponse 타입을 리턴하기로 했으므로 아래의 내용을 리턴한다.
                     return {
                         ok: true,
                         error: null,
-                        token: "coming soon"
+                        token
                     };
                 }
             } catch (error) {
@@ -33,15 +37,17 @@ const resolvers: Resolvers = {
             }
 
             try {
-                await User.create({
+                const newUser = await User.create({
                     ...args,
                     profilePhoto: `http://graph.facebook.com/${fbId}/picture?type=square`
                 }).save();
 
+                const token = createJWT(newUser.id);
+
                 return {
                     ok: true,
                     error: null,
-                    token: "Coming soon"
+                    token
                 }
             } catch (error) {
                 return {
