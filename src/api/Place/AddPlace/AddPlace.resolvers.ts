@@ -1,6 +1,6 @@
 import {AddPlaceMutationArgs, AddPlaceResponse} from "../../../types/graph";
 import privateResolver from "../../../utils/privateResolver";
-import {Resolvers} from "../../../types/resolvers";
+import { Resolvers } from "../../../types/resolvers";
 import User from "../../../entities/User";
 import Place from "../../../entities/Place";
 

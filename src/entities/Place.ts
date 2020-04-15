@@ -22,6 +22,9 @@ class Place extends BaseEntity {
     @Column({ type: "double precision", default: 0 })
     lng: number;
 
+    @Column({ nullable: true })
+    userId: number;
+
     @Column({ type: "text" })
     address: string;
 
