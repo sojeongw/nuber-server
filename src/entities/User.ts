@@ -15,6 +15,7 @@ import { IsEmail } from "class-validator";
 import Chat from "./Chat";
 import Message from "./Message";
 import Ride from "./Ride";
+import Place from "./Place";
 
 // 암호화 할 횟수
 const BCRYPT_ROUNDS = 10;
@@ -79,6 +80,9 @@ class User extends BaseEntity {
 
     @OneToMany(type => Message, message => message.user)
     messages: Message;
+
+    @OneToMany(type => Place, place => place.user)
+    places: Place[];
 
     // fullname은 칼럼이 아니라 여기 있는 칼럼을 활용하는 메서드다.
     get fullName(): string {
