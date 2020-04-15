@@ -33,7 +33,7 @@ const resolvers: Resolvers = {
                         } else {
                             return {
                                 ok: false,
-                                error: "Cant verify email"
+                                error: "Can't verify email"
                             };
                         }
                     } catch (error) {
