@@ -5,6 +5,7 @@ import {
 } from "../../../types/graph";
 import { Resolvers } from "../../../types/resolvers";
 import privateResolver from "../../../utils/privateResolver";
+import cleanNullArgs from "../../../utils/cleanNullArgs";
 
 const resolvers: Resolvers = {
     Mutation: {
@@ -15,14 +16,14 @@ const resolvers: Resolvers = {
                 { req }
             ): Promise<UpdateMyProfileResponse> => {
                 const user: User = req.user;
+                const notNull:any = cleanNullArgs(args); // 👈🏻 Add ':any'
 
-                // args에 null이 있다면 제거한다.
-                const notNull = {};
-                Object.keys(args).forEach(key => {
-                    if (args[key] !== null) {
-                        notNull[key] = args[key];
-                    }
-                });
+                // ⚠️ Take the if(notNull.password) OUT of the try/catch
+                if(notNull.password !== null) { // 👈🏻 Change from args to notNull
+                    user.password = notNull.password; // 👈🏻 Same here
+                    user.save();
+                    delete notNull.password; // <--  ⚠️⚠️⚠️ Delete password  from notNull or is going to be saved again without encoding ⚠️⚠️⚠️
+                }
                 try {
                     await User.update({ id: user.id }, { ...notNull });
                     return {
