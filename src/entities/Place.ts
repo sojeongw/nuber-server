@@ -22,14 +22,14 @@ class Place extends BaseEntity {
     @Column({ type: "double precision", default: 0 })
     lng: number;
 
-    @Column({ nullable: true })
-    userId: number;
-
     @Column({ type: "text" })
     address: string;
 
     @Column({ type: "boolean", default: false })
     isFav: boolean;
+
+    @Column({ nullable: true })
+    userId: number;
 
     @ManyToOne(type => User, user => user.places)
     user: User;

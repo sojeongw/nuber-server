@@ -23,47 +23,43 @@ const BCRYPT_ROUNDS = 10;
 @Entity()
 class User extends BaseEntity {
 
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn() id: number;
 
-    @Column({type: "text", nullable: true})
+    @Column({ type: "text", nullable: true })
     @IsEmail()
     email: string | null;
 
-    @Column({type: "boolean", default: false})
+    @Column({ type: "boolean", default: false })
     verifiedEmail: boolean;
 
-    @Column({type: "text"})
+    @Column({ type: "text" })
     firstName: string;
 
     @Column({ type: "text" })
     lastName: string;
 
-    @Column({ type: "int" , nullable: true})
+    @Column({ type: "int", nullable: true })
     age: number;
 
-    @Column({ type: "text" })
+    @Column({ type: "text", nullable: true })
     password: string;
 
-    @Column({ type: "text" })
+    @Column({ type: "text", nullable: true })
     phoneNumber: string;
 
     @Column({ type: "boolean", default: false })
     verifiedPhoneNumber: boolean;
 
-    @Column({ type: "text", nullable: true })
-    fbId: string;
-
     @Column({ type: "text" })
     profilePhoto: string;
 
-    @Column({type: "boolean", default: false})
+    @Column({ type: "boolean", default: false })
     isDriving: boolean;
 
-    @Column({type: "boolean", default: false})
+    @Column({ type: "boolean", default: false })
     isRiding: boolean;
 
-    @Column({type: "boolean", default: false})
+    @Column({ type: "boolean", default: false })
     isTaken: boolean;
 
     @Column({ type: "double precision", default: 0 })
@@ -75,14 +71,27 @@ class User extends BaseEntity {
     @Column({ type: "double precision", default: 0 })
     lastOrientation: number;
 
+    @Column({ type: "text", nullable: true })
+    fbId: string;
+
     @ManyToOne(type => Chat, chat => chat.participants)
     chat: Chat;
 
     @OneToMany(type => Message, message => message.user)
-    messages: Message;
+    messages: Message[];
+
+    @OneToMany(type => Ride, ride => ride.passenger)
+    ridesAsPassenger: Ride[];
+
+    @OneToMany(type => Ride, ride => ride.driver)
+    ridesAsDriver: Ride[];
 
     @OneToMany(type => Place, place => place.user)
     places: Place[];
+
+    @CreateDateColumn() createdAt: string;
+
+    @UpdateDateColumn() updatedAt: string;
 
     // fullname은 칼럼이 아니라 여기 있는 칼럼을 활용하는 메서드다.
     get fullName(): string {
@@ -111,15 +120,6 @@ class User extends BaseEntity {
     private hashPassword(password: string): Promise<string> {
         return bcrypt.hash(password, BCRYPT_ROUNDS);
     }
-
-    @OneToMany(type => Ride, ride => ride.passenger)
-    ridesAsPassenger: Ride[];
-
-    @OneToMany(type => Ride, ride => ride.driver)
-    ridesAsDriver: Ride[];
-
-    @CreateDateColumn() createdAt: string;
-    @UpdateDateColumn() updatedAt: string;
 }
 
 export default User;
