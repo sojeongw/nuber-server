@@ -13,12 +13,17 @@ const resolvers: Resolvers = {
             async (
                 _,
                 args: ReportMovementMutationArgs,
-                { req }
+                { req, pubSub }
             ): Promise<ReportMovementResponse> => {
                 const user: User = req.user;
                 const notNull: any = cleanNullArgs(args);
                 try {
                     await User.update({ id: user.id }, { ...notNull });
+
+                    // driverUpdate라는 채널에 DriversSubscription라는 user타입 정보를 payload로 보내서 publish 한다.
+                    // 이때 payload 이름(DriversSubscription)은 DriversSubscription.graphql에 subscription 타입으로 정의한 것과 일치해야 한다.
+                    pubSub.publish("driverUpdate", { DriversSubscription: user });
+
                     return {
                         ok: true,
                         error: null
