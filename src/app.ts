@@ -31,9 +31,16 @@ class App {
             // 정리하자면 요청 오브젝트를 컨텍스트로 보내면 모든 리졸버로 보내진다.
             // req를 argument로 가지는 함수를 넘긴다.
             context: req => {
+                // req 안에 connection이 있고 connection 안에 context가 있다.
+                // 이때 context는 null이거나 connection이 비어있을 수 있다.
+                // 펼쳐서 디폴트 값을 설정해주면 에러를 막을 수 있다.
+                // context에 디폴트로 null을 주고, connection은 비어있는 {} 를 주면 에러가 나지 않는다.
+                const {connection: {context = null} = {}} = req;
+
                 return {
                     req: req.request,
-                    pubSub: this.pubSub // DriversSubscription.resolver에서 context로 받을 정보
+                    pubSub: this.pubSub, // DriversSubscription.resolver에서 context로 받을 정보
+                    context
                 }
             }
         });
