@@ -1,10 +1,36 @@
+import { withFilter } from "graphql-yoga";
+import User from "../../../entities/User";
+
 // 근처에 있는 운전자를 알려주는 리졸버
 const resolvers = {
     Subscription: {
         DriversSubscription: {
-            subscribe: (_, __, { pubSub }) => {
-                return pubSub.asyncIterator("driverUpdate");    // driverUpdate 채널을 업데이트할 때마다 알려주도록 리턴한다.
-            }
+            subscribe: withFilter(
+                // withFilter의 첫번째 함수 asyncIteratorFn은 asyncIterator를 반환해야 한다.
+                (_, __, { pubSub }) => pubSub.asyncIterator("driverUpdate"), // driverUpdate 채널을 업데이트할 때마다 알려주도록 리턴한다
+                // filterFn은 true를 리턴하면 이 함수 listening 하고 있는 유저에게 결과물을 전송한다.
+                // false라면 유저에게 아무것도 전송하지 않는다.
+                (payload, _, { context }) => {
+                    const user: User = context.currentUser;
+                    const {
+                        DriversSubscription: {
+                            lastLat: driverLastLat,
+                            lastLng: driverLastLng
+                        }
+                    } = payload;
+
+                    // 구조 분해 할당 시 : 뒤에 다른 이름을 붙여줄 수 있다.
+                    const { lastLat: userLastLat, lastLng: userLastLng } = user;
+
+                    // 드라이버가 사용자 가까이에 있으면 true를 리턴한다.
+                    return (
+                        driverLastLat >= userLastLat - 0.05 &&
+                        driverLastLat <= userLastLat + 0.05 &&
+                        driverLastLng >= userLastLng - 0.05 &&
+                        driverLastLng <= userLastLng + 0.05
+                    );
+                }
+            )
         }
     }
 };
