@@ -1,19 +1,21 @@
 import Ride from "../../../entities/Ride";
 import User from "../../../entities/User";
-import { GetRideQueryArgs, GetRideResponse } from "../../../types/graph";
-import { Resolvers } from "../../../types/resolvers";
+import {GetRideQueryArgs, GetRideResponse} from "../../../types/graph";
+import {Resolvers} from "../../../types/resolvers";
 import privateResolver from "../../../utils/privateResolver";
 
 const resolvers: Resolvers = {
     Query: {
         GetRide: privateResolver(
-            async (_, args: GetRideQueryArgs, { req }): Promise<GetRideResponse> => {
+            async (_, args: GetRideQueryArgs, {req}): Promise<GetRideResponse> => {
                 const user: User = req.user;
 
                 try {
                     const ride = await Ride.findOne({
-                        id: args.rideId
-                    });
+                            id: args.rideId
+                        },
+                        {relations: ["messages"]}
+                    );
                     if (ride) {
                         if (ride.passengerId === user.id || ride.driverId === user.id) {
                             return {
