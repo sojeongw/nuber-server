@@ -18,7 +18,7 @@ const resolvers: Resolvers = {
                 const user: User = req.user;
 
                 // user가 드라이빙 중이 아니라면 ride를 요청할 수 있다.
-                if (!user.isRiding) {
+                if (!user.isRiding && !user.isDriving) {
                     try {
                         const ride = await Ride.create({ ...args, passenger: user }).save();
 
@@ -43,7 +43,7 @@ const resolvers: Resolvers = {
                 } else {
                     return {
                         ok: false,
-                        error: "You can't request two rides",
+                        error: "You can't request two rides or drive and request",
                         ride: null
                     };
                 }

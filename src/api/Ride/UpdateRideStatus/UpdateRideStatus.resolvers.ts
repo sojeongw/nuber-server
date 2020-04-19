@@ -35,10 +35,13 @@ const resolvers: Resolvers = {
                                 user.save();
 
                                 // accepted가 되면 채팅방을 생성한다.
-                                await Chat.create({
+                                const chat = await Chat.create({
                                     driver: user,
                                     passenger: ride.passenger
                                 }).save();
+
+                                ride.chat = chat;
+                                ride.save();
                             }
                         } else {
                             ride = await Ride.findOne({
