@@ -1,3 +1,4 @@
+import Chat from "../../../entities/Chat";
 import Ride from "../../../entities/Ride";
 import User from "../../../entities/User";
 import {
@@ -19,15 +20,25 @@ const resolvers: Resolvers = {
                 if (user.isDriving) {
                     try {
                         let ride: Ride | undefined;
+
                         if (args.status === "ACCEPTED") {
-                            ride = await Ride.findOne({
-                                id: args.rideId,
-                                status: "REQUESTING"
-                            });
+                            ride = await Ride.findOne(
+                                {
+                                    id: args.rideId,
+                                    status: "REQUESTING"
+                                },
+                                { relations: ["passenger"] }
+                            );
                             if (ride) {
                                 ride.driver = user;
                                 user.isTaken = true;
                                 user.save();
+
+                                // accepted가 되면 채팅방을 생성한다.
+                                await Chat.create({
+                                    driver: user,
+                                    passenger: ride.passenger
+                                }).save();
                             }
                         } else {
                             ride = await Ride.findOne({
@@ -38,9 +49,7 @@ const resolvers: Resolvers = {
                         if (ride) {
                             ride.status = args.status;
                             ride.save();
-
                             pubSub.publish("rideUpdate", { RideStatusSubscription: ride });
-
                             return {
                                 ok: true,
                                 error: null

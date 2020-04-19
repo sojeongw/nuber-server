@@ -94,6 +94,11 @@ type RequestRideResponse {
   ride: Ride
 }
 
+type Subscription {
+  RideStatusSubscription: Ride
+  DriversSubscription: User
+}
+
 type Ride {
   id: Int!
   status: String!
@@ -135,10 +140,6 @@ type CompleteEmailVerificationResponse {
 type CompletePhoneVerificationResponse {
   ok: Boolean!
   error: String
-}
-
-type Subscription {
-  DriversSubscription: User
 }
 
 type EmailSignInResponse {
