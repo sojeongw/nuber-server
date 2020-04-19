@@ -17,6 +17,9 @@ class Message extends BaseEntity {
     @Column({type: "text"})
     text: string;
 
+    @Column({ nullable: true })
+    chatId: number;
+
     // 타입은 chat이 되고 이 하나의 chat에서 messages를 참조해서 여러 message를 찾을 수 있다.
     @ManyToOne(type => Chat, chat => chat.messages)
     chat: Chat;
