@@ -1,8 +1,10 @@
+
 import {
     BaseEntity,
     Column,
     CreateDateColumn,
-    Entity, ManyToOne,
+    Entity,
+    ManyToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
@@ -15,7 +17,8 @@ class Ride extends BaseEntity {
 
     @Column({
         type: "text",
-        enum: ["ACCEPTED", "FINISHED", "CANCELED", "REQUESTING", "ONROUTE"]
+        enum: ["ACCEPTED", "FINISHED", "CANCELED", "REQUESTING", "ONROUTE"],
+        default: "ACCEPTED"
     })
     status: rideStatus;
 
@@ -49,7 +52,8 @@ class Ride extends BaseEntity {
     @ManyToOne(type => User, user => user.ridesAsPassenger)
     passenger: User;
 
-    @ManyToOne(type => User, user => user.ridesAsDriver)
+    // ride를 요청할 때는 아직 드라이버가 할당되지 않은 상태이므로 nullable로 설정한다.
+    @ManyToOne(type => User, user => user.ridesAsDriver, { nullable: true })
     driver: User;
 
     @CreateDateColumn() createdAt: string;

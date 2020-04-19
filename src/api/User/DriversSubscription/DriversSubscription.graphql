@@ -1,5 +1,3 @@
-# 이건 업데이트 하는 정보기 때문에 ok 같은 정보를 보내지 않는다.
-# 일단 처음엔 근처 운전자들을 받고 업데이트로 subscribe한다.
 type Subscription {
     DriversSubscription: User
 }
